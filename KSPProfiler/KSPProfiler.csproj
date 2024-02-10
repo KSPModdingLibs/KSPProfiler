@@ -92,18 +92,12 @@
     <Compile Include="GameLoopProfilerCapture.cs" />
     <Compile Include="GameLoopProfiler.cs" />
     <Compile Include="Lib.cs" />
-    <Compile Include="MethodProfiler.cs" />
-    <Compile Include="KSPProfiler.cs" />
+    <Compile Include="KSPProfilerAddon.cs" />
     <Compile Include="GameLoopProfilerInjector.cs" />
     <Compile Include="GameLoopProfilerSystems.cs" />
-    <Compile Include="MethodProfilerResultsUI.cs" />
-    <Compile Include="MethodProfilerUI.cs" />
-    <Compile Include="ProfiledMethod.cs" />
-    <Compile Include="ProfiledMethodGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameLoopProfilerUI.cs" />
-    <Compile Include="UI\Launcher.cs" />
-    <Compile Include="UI\MainWindow.cs" />
+    <Compile Include="UIManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -115,6 +109,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <!--Project-specfic configuration-->
   <PropertyGroup>
     <RepoRootPath>$(ProjectDir)..\</RepoRootPath>

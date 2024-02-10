@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-using KSPProfiler.UI;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.LowLevel;
-
 
 namespace KSPProfiler
 {

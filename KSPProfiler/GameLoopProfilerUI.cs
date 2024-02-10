@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using TMPro;
 
-namespace KSPProfiler.UI
+namespace KSPProfiler
 {
     public class GameLoopProfilerUI : KsmUIVerticalLayout
     {
@@ -558,7 +558,5 @@ namespace KSPProfiler.UI
                 worst1Text.Text = fixedCapture.worst1PerCall.ToString(format);
             }
         }
-
-
     }
 }
