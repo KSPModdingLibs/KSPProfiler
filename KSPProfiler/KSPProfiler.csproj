@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1866BC73-3DCB-4D79-B49F-26E7A92E68FF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KSPProfiler</RootNamespace>
+    <AssemblyName>KSPProfiler</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <PlatformTarget>x64</PlatformTarget>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <!--Import targets now, which will import KSPCommunityFixes.csproj.user where the path to the KSP install root must be defined in ReferencePath-->
+  <!--This must be done after the main project poperties are defined because it needs the target framework property to be defined -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--Parse KSP platform-specific paths and set the start action-->
+  <PropertyGroup>
+    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('Windows'))">KSP_x64.exe</KSPExecutable>
+    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('OSX'))">KSP.app</KSPExecutable>
+    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('Linux'))">KSP.x86_64</KSPExecutable>
+    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('Windows'))">KSP_x64_Data\Managed</ManagedRelativePath>
+    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('OSX'))">KSP.app\Contents\Resources\Data\Managed</ManagedRelativePath>
+    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('Linux'))">KSP_Data\Managed</ManagedRelativePath>
+    <ManagedPath>$(ReferencePath)\$(ManagedRelativePath)</ManagedPath>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(ReferencePath)\$(KSPExecutable)</StartProgram>
+    <StartWorkingDirectory>$(ReferencePath)</StartWorkingDirectory>
+  </PropertyGroup>
+  <!--Import references-->
+  <ItemGroup>
+    <Reference Include="$(ManagedPath)\System.dll">
+      <Name>System (KSP/Mono)</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(ManagedPath)\mscorlib.dll">
+      <Name>System.Core (KSP/Mono)</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(ManagedPath)\System.Xml.dll">
+      <Name>System.Xml (KSP/Mono)</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(ManagedPath)\UnityEngine*.dll">
+      <Name>UnityEngine</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(ManagedPath)\Assembly-CSharp.dll">
+      <Name>Assembly-CSharp</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(ManagedPath)\Assembly-CSharp-firstpass.dll">
+      <Name>Assembly-CSharp-firstpass</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net472\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <!--Krafs.Publicizer config-->
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArrayStatistics.cs" />
+    <Compile Include="GameLoopProfilerCapture.cs" />
+    <Compile Include="GameLoopProfiler.cs" />
+    <Compile Include="Lib.cs" />
+    <Compile Include="MethodProfiler.cs" />
+    <Compile Include="KSPProfiler.cs" />
+    <Compile Include="GameLoopProfilerInjector.cs" />
+    <Compile Include="GameLoopProfilerSystems.cs" />
+    <Compile Include="MethodProfilerResultsUI.cs" />
+    <Compile Include="MethodProfilerUI.cs" />
+    <Compile Include="ProfiledMethod.cs" />
+    <Compile Include="ProfiledMethodGroup.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameLoopProfilerUI.cs" />
+    <Compile Include="UI\Launcher.cs" />
+    <Compile Include="UI\MainWindow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KsmUI\KsmUI.csproj">
+      <Project>{1b9d144a-e0b8-4f24-8289-d7e6aa6e416b}</Project>
+      <Name>KsmUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!--Project-specfic configuration-->
+  <PropertyGroup>
+    <RepoRootPath>$(ProjectDir)..\</RepoRootPath>
+    <GameDataFolderName>KSPProfiler</GameDataFolderName>
+    <UsePluginsFolder>true</UsePluginsFolder>
+    <CopyReleaseBinariesToRepo>false</CopyReleaseBinariesToRepo>
+    <AVCFilename>KSPProfiler.version</AVCFilename>
+  </PropertyGroup>
+  <!--MSBuild targets-->
+  <Target Name="BeforeBuild" Condition="'$(Configuration)' == 'Release'">
+    <GetAVCVersion Path="$(RepoRootPath)\GameData\$(GameDataFolderName)\$(AVCFilename)">
+      <Output PropertyName="AVCFullVersion" TaskParameter="FullVersion" />
+    </GetAVCVersion>
+    <UpdateAssemblyVersion Path="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" Version="$(AVCFullVersion)" />
+  </Target>
+  <Target Name="AfterBuild">
+    <Error Condition="'$(ReferencePath)' == '' OR !Exists('$(ReferencePath)')" Text="ReferencePath=$(ReferencePath) os empty or isn't a valid path" />
+    <CallTarget Targets="CopyToKSP" />
+    <CallTarget Targets="CopyBinariesToRepo" Condition="'$(Configuration)' == 'Release' AND '$(CopyReleaseBinariesToRepo)' == 'true'" />
+    <CallTarget Targets="MakeReleaseZip" Condition="'$(Configuration)' == 'Release'" />
+  </Target>
+  <!--Custom targets-->
+  <Target Name="CopyToKSP">
+    <RemoveDir Condition="Exists('$(ReferencePath)\GameData\$(GameDataFolderName)')" Directories="$(ReferencePath)\GameData\$(GameDataFolderName)" />
+    <ItemGroup>
+      <GameDataFiles Include="$(RepoRootPath)\GameData\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GameDataFiles)" DestinationFolder="$(ReferencePath)\GameData\%(RecursiveDir)" />
+    <PropertyGroup>
+      <BinariesKSPGameDataPath Condition="'$(UsePluginsFolder)' == 'true'">$(ReferencePath)\GameData\$(GameDataFolderName)\Plugins</BinariesKSPGameDataPath>
+      <BinariesKSPGameDataPath Condition="'$(UsePluginsFolder)' == 'false'">$(ReferencePath)\GameData\$(GameDataFolderName)</BinariesKSPGameDataPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <BinariesToCopy Include="$(TargetDir)\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinariesToCopy)" DestinationFolder="$(BinariesKSPGameDataPath)" />
+  </Target>
+  <Target Name="CopyBinariesToRepo">
+    <PropertyGroup>
+      <BinariesRepoRootPath Condition="'$(UsePluginsFolder)' == 'true'">$(RepoRootPath)\GameData\$(GameDataFolderName)\Plugins</BinariesRepoRootPath>
+      <BinariesRepoRootPath Condition="'$(UsePluginsFolder)' == 'false'">$(RepoRootPath)\GameData\$(GameDataFolderName)</BinariesRepoRootPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <BinariesToCopy Include="$(TargetDir)\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinariesToCopy)" DestinationFolder="$(BinariesRepoRootPath)" />
+  </Target>
+  <Target Name="MakeReleaseZip">
+    <PropertyGroup>
+      <PublishFolder>$(RepoRootPath)\Releases</PublishFolder>
+      <PublishTempFolderPath>$(PublishFolder)\Temp</PublishTempFolderPath>
+      <PublishPluginRootPath>$(PublishTempFolderPath)\GameData\$(GameDataFolderName)</PublishPluginRootPath>
+      <PublishBinariesPath Condition="'$(UsePluginsFolder)' == 'true'">$(PublishPluginRootPath)\Plugins</PublishBinariesPath>
+      <PublishBinariesPath Condition="'$(UsePluginsFolder)' == 'false'">$(PublishPluginRootPath)</PublishBinariesPath>
+    </PropertyGroup>
+    <RemoveDir Condition="'$(PublishTempFolderPath)' != '' AND Exists('$(PublishTempFolderPath)')" Directories="$(PublishTempFolderPath)" />
+    <ItemGroup>
+      <GameDataFiles Include="$(RepoRootPath)\GameData\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GameDataFiles)" DestinationFolder="$(PublishTempFolderPath)\GameData\%(RecursiveDir)" />
+    <ItemGroup>
+      <BinariesToCopy Include="$(TargetDir)\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinariesToCopy)" DestinationFolder="$(PublishBinariesPath)" />
+    <Copy SourceFiles="$(RepoRootPath)\README.md" DestinationFolder="$(PublishPluginRootPath)" />
+    <GetAVCVersion Path="$(RepoRootPath)\GameData\$(GameDataFolderName)\$(AVCFilename)">
+      <Output PropertyName="AVCVersionMajor" TaskParameter="Major" />
+      <Output PropertyName="AVCVersionMinor" TaskParameter="Minor" />
+      <Output PropertyName="AVCVersionPatch" TaskParameter="Patch" />
+    </GetAVCVersion>
+    <ZipDirectory SourceDirectory="$(PublishTempFolderPath)" DestinationFile="$(PublishFolder)\$(AssemblyName)_$(AVCVersionMajor).$(AVCVersionMinor).$(AVCVersionPatch).zip" Overwrite="true" />
+  </Target>
+  <UsingTask TaskName="GetAVCVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <Path ParameterType="System.String" Required="true" />
+      <Major ParameterType="System.String" Output="true" />
+      <Minor ParameterType="System.String" Output="true" />
+      <Patch ParameterType="System.String" Output="true" />
+      <Build ParameterType="System.String" Output="true" />
+      <FullVersion ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+            string content = File.ReadAllText(Path);
+            content = content.Replace(" ", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+
+            string startString = "\"VERSION\"";
+            int start = content.IndexOf(startString, StringComparison.OrdinalIgnoreCase) + startString.Length;
+            start = content.IndexOf('{', start) + 1;
+            int end = content.IndexOf('}', start);
+            content = content.Substring(start, end - start);
+
+            string itemName = "\"MAJOR\":";
+            int current = content.IndexOf(itemName, StringComparison.OrdinalIgnoreCase);
+            if (current >= 0)
+            {
+                current += itemName.Length;
+                while (current < content.Length && char.IsNumber(content[current]))
+                {
+                    Major += content[current];
+                    current++;
+                }
+            }
+            else
+            {
+                Major = "0";
+            }
+
+            itemName = "\"MINOR\":";
+            current = content.IndexOf(itemName, StringComparison.OrdinalIgnoreCase);
+            if (current >= 0)
+            {
+                current += itemName.Length;
+                while (current < content.Length && char.IsNumber(content[current]))
+                {
+                    Minor += content[current];
+                    current++;
+                }
+            }
+            else
+            {
+                Minor = "0";
+            }
+
+            itemName = "\"PATCH\":";
+            current = content.IndexOf(itemName, StringComparison.OrdinalIgnoreCase);
+            if (current >= 0)
+            {
+                current += itemName.Length;
+                while (current < content.Length && char.IsNumber(content[current]))
+                {
+                    Patch += content[current];
+                    current++;
+                }
+            }
+            else
+            {
+                Patch = "0";
+            }
+
+            itemName = "\"BUILD\":";
+            current = content.IndexOf(itemName, StringComparison.OrdinalIgnoreCase);
+            if (current >= 0)
+            {
+                current += itemName.Length;
+                while (current < content.Length && char.IsNumber(content[current]))
+                {
+                    Build += content[current];
+                    current++;
+                }
+            }
+            else
+            {
+                Build = "0";
+            }
+
+            FullVersion = Major + "." + Minor + "." + Patch + "." + Build;
+]]></Code>
+    </Task>
+  </UsingTask>
+  <UsingTask TaskName="UpdateAssemblyVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <Path ParameterType="System.String" Required="true" />
+      <Version ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+            string content = File.ReadAllText(Path);
+            string newContent = Regex.Replace(content, "AssemblyFileVersion\\(\\\"(.*)\\\"\\)", "AssemblyFileVersion(\"" + Version + "\")");
+			string v2 = Version.Replace(".", ", ");
+			v2 = ", " + v2.Remove(v2.LastIndexOf(','));
+            newContent = Regex.Replace(newContent, "KSPAssembly\\(\\\"KSPProfiler\\\"(.*)\\)", "KSPAssembly(\"KSPProfiler\"" + v2 + ")");
+            if (content != newContent)
+                File.WriteAllText(Path, newContent);
+]]></Code>
+    </Task>
+  </UsingTask>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.0.1\build\Krafs.Publicizer.targets')" />
+</Project>
